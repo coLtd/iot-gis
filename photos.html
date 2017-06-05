@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/animate.css" rel="stylesheet" />
+	<body>
+		<!-- 主页面内容容器 -->
+		<div class="mui-content mui-scroll-wrapper">
+		    <div id="imageVideo"  style="width:300px;height:200px;">
+		       <p id="content">this is test img</p> 
+		       <button id="btnPlay" class="mui-btn">点击播放</button>
+		    </div>
+			<!--时间刻度条-->
+		    <canvas id="timeCarve"   width="auto" height="80" style="background-color: #15553C ;"></canvas>		    
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+		(function($) {
+　　　　		$.init();
+			var c=document.getElementById("timeCarve");
+			c.width = document.body.clientWidth;
+			var visiblePageWidth = c.width;
+			var visiblePageHeight = c.height;
+			
+			//console.log(visiblePageWidth + ':' + visiblePageHeight);
+			
+			var cxt=c.getContext("2d");
+			cxt.strokeStyle = 'rgba(50,113,88,1)'; 
+			cxt.lineCap = 'round';
+			
+			var stage = {};
+			stage.ctx = cxt;
+			stage.width = visiblePageWidth;
+			stage.height = visiblePageHeight;
+			
+			//格式化日期字符串
+			Date.prototype.Format = function (fmt) { //author: meizz 
+    		var o = {
+        		"M+": this.getMonth() + 1, //月份 
+        		"d+": this.getDate(), //日 
+        		"h+": this.getHours(), //小时 
+        		"m+": this.getMinutes(), //分 
+        		"s+": this.getSeconds(), //秒 
+        		"q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        		"S": this.getMilliseconds() //毫秒 
+    		};
+    		if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    		for (var k in o)
+    		if (new RegExp("(" + k + ")").test(fmt)) 
+    			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    			return fmt;}
+			
+			var strokeAlgorithmByPeriod = function(startTime,endTime,space,type){
+				var nodes = {};
+				var nodeList = [];
+				nodes.count = 0;
+				var startTime = startTime;
+				var endTime = endTime;
+				var space = space || 15;
+				var type = type || 'M';
+				startTime = new Date(startTime.replace(/-/g,'/'));
+				endTime = new Date(endTime.replace(/-/g,'/'));
+				if(!(endTime instanceof Date)&&!(startTime instanceof Date)){
+					throw  '时间参数非法';
+				};
+				if(endTime < startTime){
+					throw '结束时间大于开始时间';
+				};
+				//计算相差的毫秒数
+				var diffMillSeconds = endTime - startTime;	
+				//计算相差的秒数
+				var diffSeconds = Math.floor(diffMillSeconds / 1000);
+				//计算相差的分钟数
+				var diffMinutes = Math.floor(diffSeconds / 60);
+				//计算相差的小时数
+				var diffHours = Math.floor(diffMinutes / 60);
+					//计算相差的天数
+				var diffDays = Math.floor(diffHours/24);		
+				
+				//根据间隔及类型返回数据点数
+				switch(type) {
+					case 'H': nodes.count = Math.floor(diffHours/space); break;
+					case 'M': nodes.count = Math.floor(diffMinutes/space);break;
+					default: nodes.count = Math.floor(diffMinutes/space);break;
+				}
+				//console.log('D:'+diffDays+' H:'+diffHours+' M:' + diffMinutes + ' S:' + diffSeconds + ' MS:' + diffMillSeconds);
+				//console.log(nodes.count);
+				nodes.nodeList = [];
+				var _tmpTime = startTime;
+				for(var i = 0; i < nodes.count; i++){
+					var node = {};
+					node.index = i,
+					node.isKey = i % 4 ? false:true;
+					node.text = new Date(_tmpTime.getTime()+i*15*60*1000).Format("yyyy-MM-dd hh:mm:ss")
+					//console.log(new Date(_tmpTime.getTime()+(type=='M':(i*15*60*1000):(i*15*3600*1000))).Format("yyyy-MM-dd hh:mm:ss"));
+					nodes.nodeList.push(node);
+				}
+				return nodes;
+			}
+			
+			//设置场景
+			var Scene = function(_stage){
+				this.width = _stage.width;
+				this.Height = _stage.height;
+				this.ctx = _stage.ctx;	
+			}
+			//在场景上划线
+			Scene.prototype.addLine = function(startPoint,endPoint){
+				this.ctx.moveTo(startPoint.x,startPoint.y);
+				this.ctx.lineTo(endPoint.x,endPoint.y);
+				this.ctx.stroke();
+			}
+			//在场景上写字
+			Scene.prototype.addText = function(textContent,x,y){
+				this.ctx.strokeText(textContent,x,y);
+			}
+			//在场景上平移
+			Scene.prototype.translate = function(x,y){
+				this.ctx.translate(x,y);
+			}
+			//绘制指示器
+			Scene.prototype.addIndicator = function(){
+				this.ctx.beginPath();
+				this.ctx.strokeStyle = 'rgba(255,255,255,1)'; 
+				this.ctx.moveTo(Math.floor(this.width/2),0);
+				this.ctx.lineTo(Math.floor(this.width/2),this.Height);
+				this.ctx.stroke();
+			}			
+			
+			var nodes = strokeAlgorithmByPeriod('2015-01-01','2015-01-02');			
+			var scene = new Scene(stage);
+			var startPoint = {x:0,y:0}; //起始位置
+			var endPoint = {x:0,y:0};//结束位置
+			var keyLine = 40;//关键帧
+			var baseLine = 30;//基本帧			
+			for(var i = 0; i < nodes.count; i++){
+				var label = '';
+				startPoint.x += 20;
+				startPoint.y = nodes.nodeList[i].isKey ? 18 : 23;
+				endPoint.x = startPoint.x;
+				endPoint.y = startPoint.y + (nodes.nodeList[i].isKey ? keyLine : baseLine);
+				scene.addLine(startPoint,endPoint);	
+				if(nodes.nodeList[i].isKey){
+					label = nodes.nodeList[i].text;
+					label = label.substr(11,5);
+					scene.addText(label,endPoint.x - 15,endPoint.y + 15);
+				}
+			}
+			//绘制指示器
+			scene.addIndicator();		
+			/*scene.translate(endPoint.x + 20,endPoint.y+0);*/	
+			
+			var log = function(){
+				console.log("this is log output.");
+			}
+			
+			$(document.body).on('tap','#btnPlay',function(e){
+			  	window.setInterval(log,3000);
+			})
+			
+　　		})(mui)
+	  </script>
+	</body>
+</html>

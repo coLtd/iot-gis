@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<script src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="http://satellite.casm.ac.cn:8020/geowinweb/api?version=mapi&map=map&utils=advext,mobile"></script>
+		<script src="js/mui.min.js"></script>
+		<script>
+			mui.init({
+	            swipeBack: true //启用右滑关闭功能
+	        });
+		</script>
+		<!--<script src="js/my.js"></script>-->
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+				font-size: 14px;
+			}
+			.tab{
+				width: 100%;
+				background-color: #f5f6fa;
+			}
+			.nav{
+				width: 100%;
+				height: 40;
+				position: fixed;
+				bottom: 0;
+				z-index: 100;
+				background-color: #f7f7f7;	
+				text-align: center;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: -ms-flexbox;
+				display: flex;
+			}
+			.nav {
+				line-height: 40px;
+				width: 100%;	
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				-ms-flex: 1;
+				flex: 1;	
+			}
+			.nav div{
+				width: 50%;
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				-ms-flex: 1;
+				flex: 1;
+			}
+			.content{
+				width: 100%;	
+				overflow: hidden;
+			}
+			.cont{
+				position: absolute;
+				left: 0;
+				top: 44px;
+				bottom: 40px;
+				right: 0;
+			}
+			.active{
+				background-color: #41A259;
+			}
+			.activeColor{
+				color:#ffffff;
+			}
+			.fix{
+				background-color: white;
+				border-top: 1px solid #ccc;
+				position: absolute;
+				bottom: 0px;
+				width: 100%;
+				overflow: hidden;
+				height: 0px;
+				text-align: center;
+				z-index: 101;
+				padding: 0 15px;
+			}
+			a{
+				color:#41A259;
+			}
+			.tit1{
+				display: block;
+				border-bottom: 1px solid #dedde0;
+				height: 38px;
+				margin-left: 15px;
+				margin-right: 0px;
+			}
+			.tit2{
+				height: 96px;
+				background-color: #FFFFFF;
+			}
+			.tit2 div{
+				width: 25%;
+				float: left;
+				text-align: center;
+				padding-top:10px;
+				color:#808080;
+				font-size: 13px;
+			}
+			.tit2 img{
+				width: 47px;
+				height: 47px;
+			}
+			.tit2Active{
+				border-bottom: 2px solid #2198F4;
+			}
+			#ta1:target, #ta2:target, #ta3:target, #ta4:target {
+				z-index: 1;
+			}
+			.tab_content{
+				overflow: hidden;
+				position: absolute;
+				width: 100%;
+				top: 144px;
+				bottom: 0px;
+				background-color: #fff;
+			}
+			.panel1:hover{
+				background-color: #e4e7f2;
+			}
+		</style>
+	</head>
+	<body onload="load()">
+		<div class="tab">
+			<div class="content">
+				<div id="the1" style="display: block;" class="cont">
+					<header class="mui-bar mui-bar-nav mui-bar-transparent" style="padding-left:15px;background-color: #41A259;color:#ffffff;height: 44px;">
+						<span class="mui-icon mui-icon-back mui-action-back"><span style="font-size: 13px;color:#ffffff;">返回</span></span></span>
+						<h1 class="mui-title" style="color:#ffffff;font-size: 16px;">物联网监控</h1>
+					</header>
+					<div style="background-color: #fff;">
+						<div class="tit1" style="line-height: 44px;">
+							<img src="img/shebe.png" style="width: 14px; height: 14px;" align="texttop"/><span style="padding-left: 5px;font-size: 14px;color: #333333;">我的设备</span>
+						</div>
+					</div>
+					<div style="height: 100%;">
+						<div class="tit2">
+							<div class="tat1 tit2Active" onclick="styleSw(1)">
+								<a href="#ta1">
+									<img src="img/caijiqi.png" />
+									<p>采集器(5)</p>
+								</a>
+							</div>
+							<div class="tat2" onclick="styleSw(2)">
+								<a href="#ta2">
+								<img src="img/shiping.png" />
+								<p>视频(11)</p>
+								</a>
+							</div>
+							<div class="tat3" onclick="styleSw(3)">
+								<a href="#ta3">
+								<img src="img/xiangji.png" />
+								<p>相机(4)</p>
+								</a>
+							</div>
+							<div class="tat4" onclick="styleSw(4)">
+								<a href="#ta4">
+								<img src="img/wangguan.png" />
+								<p>网关(0)</p>
+								</a>
+							</div>
+						</div>
+						<div id="ta1" class="tab_content">
+							<div style="background-color: #fff;">
+								<div class="tit1" style="line-height: 44px;">
+									<img align="texttop" src="img/leibiao0.png" style="width: 14px; height: 14px;"/><span style="padding-left: 5px;font-size: 14px;color: #333333;">采集器</span>
+								</div>
+								<div class="panel1">
+									<div style="margin-left:15px;border-bottom: 1px solid #dedde0;height: 64px;">
+										<div style="float: left;height: 37px;margin-top: 14px;">
+											<p style="font-size: 15px;color: #333;">DC-91-78</p>
+											<p style="margin-top: -8px;font-size: 12px;color: #808080;">传感器数量（5）</p>
+										</div>
+										<div style="float: right;height:100%;padding-top:35px;">
+											<span style="color: #f24949;font-size:12px;">告警（1）</span>
+											<span style="color: #acb1bf;font-size:12px;">离线（1）</span>
+											<span style="color: #bfb84f;font-size:12px;">异常（3）</span>
+										</div>
+									</div>
+								</div>
+								<div class="panel1">
+									<div style="margin-left:15px;border-bottom: 1px solid #dedde0;height: 64px;">
+										<div style="float: left;height: 37px;margin-top: 14px;">
+											<p style="font-size: 15px;color: #333;">DC-91-78</p>
+											<p style="margin-top: -8px;font-size: 12px;color: #808080;">传感器数量（5）</p>
+										</div>
+										<div style="float: right;height:100%;padding-top:35px;">
+											<span style="color: #f24949;font-size:12px;">告警（1）</span>
+											<span style="color: #acb1bf;font-size:12px;">离线（1）</span>
+											<span style="color: #bfb84f;font-size:12px;">异常（3）</span>
+										</div>
+									</div>
+								</div>
+								<div class="panel1">
+									<div style="margin-left:15px;border-bottom: 1px solid #dedde0;height: 64px;">
+										<div style="float: left;height: 37px;margin-top: 14px;">
+											<p style="font-size: 15px;color: #333;">DC-91-78</p>
+											<p style="margin-top: -8px;font-size: 12px;color: #808080;">传感器数量（5）</p>
+										</div>
+										<div style="float: right;height:100%;padding-top:35px;">
+											
+										</div>
+									</div>
+								</div>
+								<div class="panel1">
+									<div style="margin-left:15px;border-bottom: 1px solid #dedde0;height: 64px;">
+										<div style="float: left;height: 37px;margin-top: 14px;">
+											<p style="font-size: 15px;color: #333;">DC-91-78</p>
+											<p style="margin-top: -8px;font-size: 12px;color: #808080;">传感器数量（5）</p>
+										</div>
+										<div style="float: right;height:100%;padding-top:35px;">
+											<span style="color: #f24949;font-size:12px;">告警（1）</span>
+											<span style="color: #bfb84f;font-size:12px;">异常（2）</span>
+										</div>
+									</div>
+								</div>
+								<div class="panel1">
+									<div style="margin-left:15px;border-bottom: 1px solid #dedde0;height: 64px;">
+										<div style="float: left;height: 37px;margin-top: 14px;">
+											<p style="font-size: 15px;color: #333;">DC-91-78</p>
+											<p style="margin-top: -8px;font-size: 12px;color: #808080;">传感器数量（5）</p>
+										</div>
+										<div style="float: right;height:100%;padding-top:35px;">
+											<span style="color: #f24949;font-size:12px;">告警（1）</span>
+											<span style="color: #acb1bf;font-size:12px;">离线（1）</span>
+											<span style="color: #bfb84f;font-size:12px;">异常（3）</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="ta2" class="tab_content">
+							<div class="tit1" style="line-height: 44px;">
+								<img src="img/leibiao0.png" align="texttop" style="width: 14px; height: 14px;" /><span style="padding-left: 5px;font-size: 14px;color: #333333;">视频</span>
+							</div>
+							<div>
+								<ul>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+									<li></li>
+								</ul>
+							</div>
+						</div>
+						<div id="ta3" class="tab_content">
+							<div class="tit1" style="line-height: 44px;">
+								<img src="img/leibiao0.png" align="texttop" style="width: 14px; height: 14px;" /><span style="padding-left: 5px;font-size: 14px;color: #333333;">相机</span>
+							</div>
+						</div>
+						<div id="ta4" class="tab_content">
+							<div class="tit1" style="line-height: 44px;">
+								<img src="img/leibiao0.png" align="texttop" style="width: 14px; height: 14px;" /><span style="padding-left: 5px;font-size: 14px;color: #333333;">网关</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="the2" style="display: none;" class="cont">
+					<header class="mui-bar mui-bar-nav mui-bar-transparent">
+						<h1 class="mui-title">物联网监控</h1>
+					</header>
+					<div id="map" style="position: absolute;left: 0px;top: 0px;bottom: 0px;right: 0px;"></div>
+				</div>
+			</div>
+			<div class="nav">
+				<div onclick="sw(0)" class="nav1 active">
+					<a href="#the1">
+						<img id="img1" src="img/leibiao1.png"  align="texttop" style="width: 16px;height: 16px;"/>
+						<span class="mui-tab-label activeColor" style="font-size: 14px;">列表视图</span>
+					</a>
+				</div>
+				<div onclick="sw(1)" class="nav2">
+					<a href="#the2">
+						<img id="img2" src="img/ditu.png"  align="texttop" style="width: 16px;height: 16px;"/>
+						<span class="mui-tab-label" style="font-size: 14px;">地图视图</span>
+					</a>
+				</div>
+			</div>
+			<div class="fix" id="fix"></div>
+		</div>
+		<script type="text/javascript">
+			sessionStorage.setItem('firstLoardSw',0)
+			var mapLayers;
+			var allData;
+			function sw(i){
+				if (i===0) {
+					$(".nav1").addClass("active");
+					$(".nav1 span").addClass("activeColor");
+					$(".nav2").removeClass("active");
+					$(".nav2 span").removeClass("activeColor");
+					$("#img1").attr('src',"img/leibiao1.png");
+					$("#img2").attr('src',"img/ditu.png");
+					$("#the1").show();
+					$("#the2").hide();
+				} else {
+					$(".nav1 span").removeClass("activeColor");
+					$(".nav2 span").addClass("activeColor");
+					$(".nav1").removeClass("active");
+					$(".nav2").addClass("active");
+					$("#img1").attr('src',"img/leibiao2.png");
+					$("#img2").attr('src',"img/ditu2.png");
+					$("#the1").hide();
+					$("#the2").show();
+					if(sessionStorage.getItem('firstLoardSw')==0){
+						var sate = new CTileLayer(2, 16, 'SATE',null, null);
+						var satelabel = new CTileLayer(2, 16, 'LABEL',  null, null);
+						var MIXMAP = new CMapType([sate,satelabel], '影像');  
+						var overlay = null;
+						var opts = {mapTypes:[MIXMAP],center:new CLatLng(35,106),zoom:12};
+						mapLayers = new CMapLayers('map',opts);  
+						mapLayers.setCenter(new CLatLng(35,106),12);
+						successMarK(allData);
+					}
+					sessionStorage.setItem('firstLoardSw',1)
+				}
+			}
+			function load(){
+				$.ajax({
+				    type: "GET",
+//				    url: "http://112.115.28.126:7010/acp-web-monitor/deviceinfoatorg/getdevices/gstar/1000029?Access-Token=data.token",
+			    	url: "http://10.88.20.89:7010/acp-web-monitor/deviceinfoatorg/getdevices/gstar/1001076?Access-Token=data.token",
+				   	data: '',
+				    async:true,
+				    dataType: "json",
+				    success:function(data){
+				    	if(data.flag){
+				    		allData=data;
+				    		successRequst(data.data);
+				    		sessionStorage.setItem('devices',JSON.stringify(data.data));
+				    	}else{
+				    		mui.alert('数据模板异常！', "异常");
+				    	}
+						},
+				    error:function (request, status, error) {
+				        mui.alert('服务未响应！', "异常");
+				    }
+				});
+			}
+			function successRequst(data){
+				var caijiqi = [];
+				var shiping = [];
+				var xiangji = [];
+				var caijiqiHtml;
+				var shipHtml;
+				var xiangjiHtml;
+				for(var i of data.devices){
+					switch(i.categoryId){
+						case 3:
+							caijiqi.push(i);
+							break;
+						case 8:
+							caijiqi.push(i);
+							break;
+						case 6:
+							xiangji.push(i);
+							break;
+						case 7:
+							shiping.push(i);
+							break;
+						default:
+							break;
+					}
+				}
+				if(caijiqi.length===0){
+					caijiqiHtml = "<span>该地块下暂无采集器!</span>"
+				}else{
+					caijiqiHtml = caijiqiMergeLst(caijiqi);
+				}
+				//视频
+				if(shiping.length===0){
+					shipHtml = "<span>该地块下暂无视频!</span>"
+				}else{
+					shipHtml = shipingMergeLst(shiping);
+				}
+				//相机
+				if(xiangji.length===0){
+					xiangjiHtml = "<span>该地块下暂无相机!</span>"
+				}else{
+					xiangjiHtml = xiangjiMergeLst(xiangji);
+				}
+				$(".caijiqi").html(caijiqiHtml);
+				$(".shiping").html(shipHtml);
+				$(".xiangji").html(xiangjiHtml);
+			}
+			function caijiqiMergeLst(arr){
+				var subHtml="";
+				var sumHtml="";
+				for(var i of arr){
+			    	if(i.status==0){
+						subHtml = '<li class="mui-table-view-cell" onclick="onClickHandler(\''+i.id+'\')">'+i.deviceName+'<span class="mui-badge mui-badge-primary">正常</span></li>'
+	                }else if(i.status== -1||i.status== -2){
+                  		subHtml = '<li class="mui-table-view-cell" onclick="onClickHandler(\''+i.id+'\')">'+i.deviceName+'<span class="mui-badge">离线</span></li>'  
+	                }else if(i.status == 128||i.status == 129||i.status == 130||i.status == 131){
+	                	subHtml = '<li class="mui-table-view-cell" onclick="onClickHandler(\''+i.id+'\')">'+i.deviceName+'<span class="mui-badge mui-badge-warning">异常</span></li>'   
+	                }else if(i.status == 256||i.status == 257||i.status == 258){
+	                	subHtml = '<li class="mui-table-view-cell" onclick="onClickHandler(\''+i.id+'\')">'+i.deviceName+'<span class="mui-badge mui-badge-danger">告警</span></li>'   
+	                }else{
+	                   subHtml=""; 
+	                }
+	                sumHtml=sumHtml+subHtml;
+				}
+				return '<ul class="mui-table-view">'+sumHtml+'</ul>'
+			}
+			
+			function shipingMergeLst(arr){
+				
+			}
+			
+			function xiangjiMergeLst(arr){
+				for (var i of arr){
+
+				}
+			}
+
+			function onClickHandler (i){
+				sessionStorage.setItem('caijiqi',i);
+				mui.openWindow({
+				    url:'detail.html',
+				    id:'detail'
+			    });
+			}
+			function successMarK(data){
+				mapLayers.setCenter(new CLatLng(data.data.latitude,data.data.longitude),12)
+	            var overlay = new CMarkerCluster();
+	            for (var i in data.data.devices) {
+	                var x = data.data.devices[i].latitude;
+	                var y = data.data.devices[i].longitude;
+	                if(x != null&&y != null){
+	                    var point = new CLatLng(x,y);
+	                    var opts;
+	                    var status = data.data.devices[i].status;
+	                    var Nan = data.data.devices[i].deviceName;
+						$(".tab").click(function(e){
+							e.stopPropagation(); 
+							$(".fix").animate({height:"0px"},"fast");
+						});
+						
+	                    if(data.data.devices[i].categoryId == 3||data.data.devices[i].categoryId == 8){
+	                        if(status==0){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/1.png")};
+	                        }else if(status== -1||status== -2){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/3.png")};
+	                        }else if(status == 128||status == 129||status == 130||status == 131){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/4.png")};
+	                        }else if(status == 256||status == 257||status == 258){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/2.png")};
+	                        }else{
+	                            opts = null;
+	                        }
+	                    }else if(data.data.devices[i].categoryId==6){
+	                        if(status== 0){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/5.png")};
+	                        }else if(status== -1||status== -2){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/7.png")};
+	                        }else if(status == 128||status == 129||status == 130||status == 131){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/8.png")};
+	                        }else if(status == 256||status == 257||status == 258){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/6.png")};
+	                        }else{
+	                            opts = null;
+	                        }
+	                    }else if(data.data.devices[i].categoryId==7){
+	                        if(status== 0){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/9.png")};
+	                        }else if(status == -1||status== -2){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/11.png")};
+	                        }else if(status == 128||status == 129||status == 130||status == 131){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/12.png")};
+	                        }else if(status == 256||status == 257||status == 258){
+	                            opts = {title:Nan,draggable:false,icon:createIcon("./img/10.png")};
+	                        }else{
+	                            opts = null;
+	                        }
+	                    }
+	                    if(opts == null){
+	                        continue;
+	                    }
+	                    var m = new CMarker(point, opts);
+	                    overlay.addLayer(m,point);
+	                    CMarker.prototype.markLandId = function (id) {
+	                        this.markLandId = id;
+	                    }
+	                    m.markLandId(data.data.devices[i]);
+	                    CEvent.addListener(m, 'click', function (point) { 
+	                        if(point.target.markLandId.categoryId==3||point.target.markLandId.categoryId==8){
+								//采集器
+								$(".fix").animate({height:"0px"},"fast");
+								$(".fix").animate({height:"80px"},"fast");
+								$(".fix").click(function(e){
+									e.stopPropagation(); 
+								});
+								var statusHtml="";
+								var status = point.target.markLandId.status;
+								if(status==0){
+									statusHtml = '<span class="mui-badge mui-badge-primary">正常</span>'
+								}else if(status== -1||status== -2){
+									statusHtml = '<span class="mui-badge">离线</span>'
+								}else if(status == 128||status == 129||status == 130||status == 131){
+									statusHtml = '<span class="mui-badge mui-badge-warning">告警</span>'
+								}else if(status == 256||status == 257||status == 258){
+									statusHtml = '<span class="mui-badge mui-badge-danger">正常</span>'
+								}else{
+									statusHtml = '<span class="mui-badge mui-badge-purple">未知</span>'
+								}
+								
+								var fixHtml = '<span class="mui-icon mui-icon-arrowup" style="font-size:25px;font-weight:900;color:blue"></span>'+
+									'<p>'+
+										'<label for="x1" style="color:black">设备ID：</label><span id="x1">' + point.target.markLandId.deviceName + '</span>&nbsp;&nbsp;&nbsp;'+
+										'<label for="x2" style="color:black">场景：</label><span id="x2">' + point.target.markLandId.scenceName + '</span>&nbsp;&nbsp;&nbsp;</br>'+
+										'<label for="x3" style="color:black">类型：</label><span id="x3">' + point.target.markLandId.typeName + '</span>&nbsp;&nbsp;&nbsp;'+
+										'<label for="x3" style="color:black">状态：</label><span id="x3">' + statusHtml + '</span>&nbsp;&nbsp;&nbsp;'+
+									'</p>'
+									
+								$(".fix").html(fixHtml);
+								sessionStorage.setItem('caijiqi',point.target.markLandId.id);
+								var btn = document.getElementById("fix");
+								btn.addEventListener("swipeup",function () {
+									mui.openWindow({
+										url:'detail.html',
+									});
+								});
+								
+								
+	                        }else if(point.target.markLandId.categoryId==6){
+	                            //视频
+								sessionStorage.setItem("videoid",point.target.markLandId.id);
+								mui.openWindow({
+										url:'video.html',
+								});	
+	                        }else if(point.target.markLandId.categoryId==7){
+	                            //相机
+	                            sessionStorage.setItem("xiangji",point.target.markLandId.id);	
+	                            mui.openWindow({
+	                            	url:"photos.html",
+	                            })
+	                        }   
+	                    });
+	                }
+	            }
+	            mapLayers.addOverlay(overlay);	
+			}
+			
+			function createIcon(imageUrl) {
+			    var opts ={};
+			    opts.image = imageUrl; //图标位置
+			    opts.iconSize = new CSize(42, 42); //Icon的尺寸
+			    opts.iconAnchor = new CPoint(21,0); //锚点位置,相对于左上角
+			    opts.shadowSize = new CSize(16, 16);
+			    opts.infoWindowAnchor = new CPoint(8, 0);
+			    opts.infoShadowAnchor = new CPoint(0, 0);   
+			    /* 图标参数设置方法*/
+			    var icon = new CIcon(opts); //点图标 
+			    return icon;
+			}
+			//tat1 tit2Active
+			function styleSw(i){
+				switch(i){
+					case 1:
+						$(".tat1").addClass("tit2Active");
+						$(".tat2").removeClass("tit2Active");
+						$(".tat3").removeClass("tit2Active");
+						$(".tat4").removeClass("tit2Active");
+						break;
+					case 2:
+						$(".tat1").removeClass("tit2Active");
+						$(".tat2").addClass("tit2Active");
+						$(".tat3").removeClass("tit2Active");
+						$(".tat4").removeClass("tit2Active");
+						break;
+					case 3:
+						$(".tat1").removeClass("tit2Active");
+						$(".tat2").removeClass("tit2Active");
+						$(".tat3").addClass("tit2Active");
+						$(".tat4").removeClass("tit2Active");
+						break;
+					case 4:
+						$(".tat1").removeClass("tit2Active");
+						$(".tat2").removeClass("tit2Active");
+						$(".tat3").removeClass("tit2Active");
+						$(".tat4").addClass("tit2Active");	
+						break;
+					default:
+						break;
+				}
+			}
+		</script>
+	</body>
+</html>

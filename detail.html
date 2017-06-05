@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			body{
+				font-size: 14px;
+			}
+			.ulx{
+				margin: 0;
+				padding: 0;
+				margin-top:52px;	
+			}
+			.ulx>li{
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				color: #888;
+				display: block;
+				margin-top: 15px;
+				margin-left: 15px;
+			}
+			.ulx>li>span{
+				color:#ccc;
+			}
+			.bot{
+				background-color: #FFFFFF;
+				padding: 15px;
+				color: #666;
+			}
+			
+		</style>	
+	</head>
+	
+	<body>
+		<header class="mui-bar mui-bar-nav mui-bar-transparent">
+			<span class="mui-icon mui-icon-back mui-action-back"><span style="font-size: 15px;">返回</span></span></span>
+			<h1 class="mui-title">详情</h1>
+		</header>
+		<div class="content">
+			<ul class="ulx">
+				<li>设备id：<span class="j1"></span></li>
+				<li>设备类型：<span class="j2"></span></li>
+				<li>场景：<span class="j3"></span></li>
+				<li>网关id：<span class="j4"></span></li>
+				<li>电压（v）：<span class="j5"></span></li>
+				<li>基地：<span class="j6"></span></li>
+			</ul>
+			<div class="bot">
+				<div style="padding:30px 0;overflow: hidden; ">
+					<div class="count" style="float: left;">传感器数据（7）</div>
+					<div style="float: right;">上报时间：未知</div>
+				</div>
+				<ul class="mui-table-view" style="margin: 0;padding: 0;">
+				    
+				</ul>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			window.onload = function(){
+				var datax = JSON.parse(sessionStorage.getItem('devices'));
+//				console.log(datax);
+				var sorHtml="";
+				var count;
+				
+				for(var i of datax.devices){
+					if(i.id ==sessionStorage.getItem('caijiqi')){
+						$(".j1").html(i.deviceName);
+						$(".j2").html(i.deviceType);
+						$(".j3").html(i.scenceName);
+						$(".j4").html(i.deviceNo);
+						$(".j5").html(i.volTage);
+						$(".j6").html(datax.orgname);
+						if(i.sensors.length<0||i.sensors==null){
+							sorHtml='<span style="color:#ddd">当前采集器下没有设备！</span>'
+						}else{
+							var tmpHtml = "";
+							count = i.sensors.length;
+							for(var j of i.sensors){
+								if(j.status==0){
+									tmpHtml = '<li class="mui-table-view-cell">'+j.deviceName+'（' + j.unit +'）:&nbsp;'+ 
+												j.lastvalue+
+				        						'<span class="mui-badge mui-badge-primary">正常</span>'+
+				    						  '</li>'	
+								}else if(j.status== -1||j.status== -2){
+									tmpHtml = '<li class="mui-table-view-cell">'+j.deviceName+'（' + j.unit +'）:&nbsp;'+ 
+												j.lastvalue+
+				        						'<span class="mui-badge">离线</span>'+
+				    						  '</li>'
+								}else if(j.status == 128||j.status == 129||j.status == 130||j.status == 131){
+									tmpHtml = '<li class="mui-table-view-cell">'+j.deviceName+'（' + j.unit +'）:&nbsp;'+ 
+												j.lastvalue+
+				        						'<span class="mui-badge mui-badge-warning">异常</span>'+
+				    						  '</li>'
+								}else if(j.status == 256||j.status == 257||j.status == 258){
+									tmpHtml = '<li class="mui-table-view-cell">'+j.deviceName+'（' + j.unit +'）:&nbsp;'+ 
+												j.lastvalue+
+				        						'<span class="mui-badge mui-badge-danger">告警</span>'+
+				    						  '</li>'
+								}else{
+									tmpHtml = ''
+								}
+								sorHtml = 	sorHtml+tmpHtml;
+							}
+								
+						}
+						$(".count").html('传感器数据（'+count+'）');
+						$(".mui-table-view").html(sorHtml);
+					}
+				}
+			}
+		</script>
+	</body>
+</html>

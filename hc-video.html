@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>video</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			body{
+				background: #FFF;
+			}
+			.video-list{
+				width:45%;
+				height:160px;
+				float:left;
+				position: relative;
+				margin-left:10px;
+				margin-top:10px;
+			}
+			.video-img-wrapper{
+				height:130px;
+				background: #CCC;
+			}
+			.video-text{
+				text-align: center;
+				line-height: 30px;
+			}
+			.video-icon{
+				top:27%;
+				left:45%;
+				position: absolute;
+				opacity:0.6;
+			}
+			.video-status{
+				position: absolute;
+				top:65%;
+				left:73%;
+			}
+			.video-img{
+				height:100%;
+				width:100%;
+			}
+		</style>	
+	</head>
+	<body>
+		<div class="video-container">
+			<div class="video-list">
+				<div class="video-img-wrapper"><img src="./img/yuantiao.jpg" class="video-img"/></div>
+				<div class="video-text">DC-91-81</div>
+				<div class="video-status" style="display:none">离线</div>
+				<div class="video-icon"><img src="./img/video-icon.png"></div>
+			</div>
+			<div class="video-list">
+				<div class="video-img-wrapper"><img src="./img/yuantiao.jpg" class="video-img"/></div>
+				<div class="video-text">DC-91-81</div>
+				<div class="video-status" style="display:none">离线</div>
+				<div class="video-icon"><img src="./img/video-icon.png "></div>
+			</div>
+			<div class="video-list">
+				<div class="video-img-wrapper"><img src="./img/yuantiao.jpg" class="video-img"/></div>
+				<div class="video-text">DC-91-81</div>
+				<div class="video-status" style="display:none">离线</div>
+				<div class="video-icon"><img src="./img/video-icon.png "></div>
+			</div>
+			<div class="video-list">
+				<div class="video-img-wrapper"><img src="./img/yuantiao.jpg" class="video-img"/></div>
+				<div class="video-text">DC-91-81</div>
+				<div class="video-status" style="display:none">离线</div>
+				<div class="video-icon"><img src="./img/video-icon.png "></div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				//离线状态
+				var isOff = true;
+				if (isOff){
+					$(".video-status").show();
+					$(".video-icon").hide();
+					$(".video-img-wrapper").children().hide()
+				}
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>video</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			.video-container{
+				margin:0;
+				padding:0px;
+				list-style: none;
+			}
+			ul>li{
+				float:left;
+				position: relative;
+				width:45%;
+				height:160px;
+				margin-top:15px;
+				margin-left:12px;
+				background: #CCC;
+			}
+			.video-img{
+				height:130px;
+				width:100%;
+				background: #eee;
+			}
+			.video-icon{
+				position: absolute;
+				width:32px;
+				height:32px;
+				bottom: 50%;
+				left:41%;
+				opacity:0.6;
+				background-image: url("./img/video-icon.png");
+				background-repeat: no-repeat;
+			}
+			.video-status{
+				position: absolute;
+				display: block;
+				color:#FFF;
+				bottom:20%;
+				left:75%;
+			}
+			.video-text{
+				height:30px;
+				display: block;
+				text-align:center;
+			}
+
+
+		</style>	
+	</head>
+	<body>
+	<ul class="video-container">
+		<!--<li>
+			<img src="./img/yuantiao.jpg" class="video-img"/>
+			<div class="video-icon" onclick="videoClick()"></div>
+			<span class="video-text">DC-12-12</span>
+			<span class="video-status" style="display: none">离线</span>
+		</li>-->
+	</ul>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				/* 离线 */
+				var arr = [
+					{"status": 1, "name": "DC-1"},
+					{"status": 0, "name": "DC-2"},
+					{"status": 0, "name": "DC-3"},
+					{"status": 0, "name": "DC-4"}
+				]
+				var $isOff = false;
+				if ($isOff){
+					$(".video-status").show();
+					$(".video-icon").hide();
+					$(".video-img").attr("src","./img/off-icon.png");
+				} else{
+					$(".video-status").hide();
+					$(".video-icon").show();
+				}
+				$(".video-container").html(videoList(arr));
+			})
+			function videoClick(){
+				console.log(112);
+			}
+			function videoList(arr){
+				var subHtml = "";
+				var sumHtml = "";
+				for (var i of arr){
+					if (i.status == 0){
+						subHtml = '<li>' +
+											 	'<img src="./img/yuantiao.jpg" class="video-img"/>' +
+												'<div class="video-icon" onclick="videoClick(\''+i.id+'\')"></div>' +
+							 					'<span class="video-text">'+i.name+'</span>' +
+												'<span class="video-status" style="display: none">离线</span>' +
+											'</li>';
+					}
+					else if (i.status == 1){
+						subHtml = '<li>' +
+												'<img src="./img/off-icon.png" class="video-img"/>' +
+												'<span class="video-text">'+i.name+'</span>' +
+												'<span class="video-status">离线</span>' +
+											'</li>';
+					}
+					else{
+
+					}
+					sumHtml+=subHtml;
+				}
+				return sumHtml;
+			}
+		</script>
+	</body>
+</html>
